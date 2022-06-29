@@ -1,16 +1,15 @@
 import csv
-from snake_game_GUI import SnakeGameGUI, Color
+from snake_game_GUI import SnakeGameGUI
 import pygame
-import time
 import random
 rand = random.Random()
 
-
 statistic_files = {
-    "h1_heuristic" : "a_star_scores_h1.csv",
-    "h2_heuristic" : "a_star_scores_h2.csv",
-    "h3_heuristic" : "a_star_scores_h3.csv"
+    "h1_heuristic" : "./statistic/a_star_scores_h1.csv",
+    "h2_heuristic" : "./statistic/a_star_scores_h2.csv",
+    "h3_heuristic" : "./statistic/a_star_scores_h3.csv"
 }
+
 
 class SnakeGameAStar(SnakeGameGUI):
 
@@ -150,7 +149,6 @@ class SnakeGameAStar(SnakeGameGUI):
             return rand.choice(self.directions)
 
     def get_next_move(self, position, current_head):
-        #print("parents", self.parents)
         path = []
         while self.parents[str(position)] != current_head:
             position = self.parents[str(position)]
@@ -185,7 +183,7 @@ class SnakeGameAStar(SnakeGameGUI):
         speed = 2000
         update_rate = 1
         counter = 0
-        # direction = self.dir
+        direction = self.dir
         # pygame.init()
         #font = pygame.font.SysFont("monospace", 40)
         # self.draw_board()
@@ -282,7 +280,7 @@ class SnakeGameAStar(SnakeGameGUI):
 
         while len(self.not_explored) > 0:
             not_explored_node = self.not_explored.pop(0)
-            self.a_star_expolore_for_tail(not_explored_node[1])
+            self.a_star_explore_for_tail(not_explored_node[1])
             if self.tail_found:
                 break
 
@@ -310,7 +308,7 @@ class SnakeGameAStar(SnakeGameGUI):
             return True
         return False
 
-    def a_star_expolore_for_tail(self, unexplored_position):
+    def a_star_explore_for_tail(self, unexplored_position):
         self.explored.append(unexplored_position)
         moves = self.get_safe_moves(unexplored_position)
 
@@ -328,7 +326,7 @@ class SnakeGameAStar(SnakeGameGUI):
 
                 if not self.is_blind_row(new_head):
                     self.tail_found = True
-                    #heuristic += 10
+                    # heuristic += 10
                 return
 
             if [heuristic, new_head] not in self.not_explored:

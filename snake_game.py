@@ -8,8 +8,8 @@ class SnakeGame:
     
     def __init__(self):
         self.game_active = True
-        self.height = 5
-        self.width = 5
+        self.height = 10
+        self.width = 10
         self.size = [self.height, self.width]
         self.board = np.zeros(self.size)
         self.score = 0

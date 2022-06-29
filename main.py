@@ -17,7 +17,7 @@ def run_a_star_algorithm(iteration=None):
 def run_with_writing():
     for i in range(100):
         run_a_star_algorithm(i)
-    plot_a_star_score('a_star_scores_h3.csv')
+    plot_a_star_score('./statistic/a_star_scores_h3.csv')
 
 
 def run_reinforcement_learning():
