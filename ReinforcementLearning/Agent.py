@@ -147,9 +147,9 @@ class ReinforcementAgent(ValueEstimationAgent):
         return new_head
 
     def is_collision(self, next_position, snake):
-        if next_position[0] < 0 or next_position[0] >= 10:
+        if next_position[0] < 0 or next_position[0] >= 5:
             return True
-        elif next_position[1] < 0 or next_position[1] >= 10:
+        elif next_position[1] < 0 or next_position[1] >= 5:
             return True
         elif next_position in snake[1:]:
             return True
@@ -195,7 +195,7 @@ class ReinforcementAgent(ValueEstimationAgent):
     def isInTesting(self):
         return not self.isInTraining()
 
-    def __init__(self, actionFn = None, numTraining=9990, epsilon=0.5, alpha=0.5, gamma=1):
+    def __init__(self, actionFn = None, numTraining=9990, epsilon=0.5, alpha=0.5, gamma=0.8):
         """
         actionFn: Function which takes a state and returns the list of legal actions
 
@@ -245,50 +245,41 @@ class ReinforcementAgent(ValueEstimationAgent):
             The simulation should somehow ensure this is called
         """
         if not self.lastState is None:
-            reward = state[3] - self.lastState[3]
+            reward = state[3] - self.lastState[3] + self.score_change(state)
             self.observeTransition(self.lastState, self.lastAction, state, reward)
         return state
+
+    def score_change(self, state):
+        food = state[4]
+        height = state[5]
+        width = state[6]
+
+        score = 0
+
+        if state[0][0] < 0 or state[0][0] >= height:
+            score += -500
+        elif state[0][1] < 0 or state[0][1] >= width:
+            score += -500
+        elif state[0][1] in state[1][1:]:
+            score += -500
+
+        x = food[0] - state[0][0]
+        y = food[1] - state[0][1]
+        if abs(x) + abs(y) != 0:
+            score += (1/(abs(x) + abs(y)))*50  #verovatno da ali proveri
+
+        score += len(state[1])*10
+        if x == 0 and y == 0:
+            score += 30
+
+        if state[0][0] < 1 or state[0][0] >= height-1:
+            score += -5
+        elif state[0][1] < 1 or state[0][1] >= width-1:
+            score += -5
+
+        return score
 
     def registerInitialState(self, state):
         self.startEpisode()
         if self.episodesSoFar == 0:
             print('Beginning %d episodes of Training' % (self.numTraining))
-
-    def final(self, state):
-        """
-          Called by Pacman game at the terminal state
-        """
-        deltaReward = state.getScore() - self.lastState.getScore()
-        self.observeTransition(self.lastState, self.lastAction, state, deltaReward)
-        self.stopEpisode()
-
-        # Make sure we have this var
-        if not 'episodeStartTime' in self.__dict__:
-            self.episodeStartTime = time.time()
-        if not 'lastWindowAccumRewards' in self.__dict__:
-            self.lastWindowAccumRewards = 0.0
-        self.lastWindowAccumRewards += state.getScore()
-
-        NUM_EPS_UPDATE = 100
-        if self.episodesSoFar % NUM_EPS_UPDATE == 0:
-            print('Reinforcement Learning Status:')
-            windowAvg = self.lastWindowAccumRewards / float(NUM_EPS_UPDATE)
-            if self.episodesSoFar <= self.numTraining:
-                trainAvg = self.accumTrainRewards / float(self.episodesSoFar)
-                print('\tCompleted %d out of %d training episodes' % (
-                       self.episodesSoFar,self.numTraining))
-                print('\tAverage Rewards over all training: %.2f' % (
-                        trainAvg))
-            else:
-                testAvg = float(self.accumTestRewards) / (self.episodesSoFar - self.numTraining)
-                print('\tCompleted %d test episodes' % (self.episodesSoFar - self.numTraining))
-                print('\tAverage Rewards over testing: %.2f' % testAvg)
-            print('\tAverage Rewards for last %d episodes: %.2f'  % (
-                    NUM_EPS_UPDATE,windowAvg))
-            print('\tEpisode took %.2f seconds' % (time.time() - self.episodeStartTime))
-            self.lastWindowAccumRewards = 0.0
-            self.episodeStartTime = time.time()
-
-        if self.episodesSoFar == self.numTraining:
-            msg = 'Training Done (turning off epsilon and alpha)'
-            print('%s\n%s' % (msg,'-' * len(msg)))

@@ -8,8 +8,8 @@ class SnakeGame:
     
     def __init__(self):
         self.game_active = True
-        self.height = 10
-        self.width = 10
+        self.height = 5
+        self.width = 5
         self.size = [self.height, self.width]
         self.board = np.zeros(self.size)
         self.score = 0
@@ -53,6 +53,8 @@ class SnakeGame:
             self.game_active = False
 
     def move_head(self):
+        if self.head[0] >= self.height or self.head[1] >= self.width or self.head[0] < 0 or self.head[1] < 0:
+            return
         self.snake.insert(0, self.head.copy())
         self.board[self.snake[1][0], self.snake[1][1]] = 1
         self.board[self.head[0], self.head[1]] = 2

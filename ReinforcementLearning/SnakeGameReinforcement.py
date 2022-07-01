@@ -27,9 +27,12 @@ class SnakeGameReinforcement(SnakeGameGUI):
             pass
         else:
             agent.registerInitialState(self.state)
-            while self.game_state:
+            while self.game_active:
                 obs = agent.observationFunction(self.state, self.food, self.height, self.width)#proveri za state
                 action = agent.getAction(obs)
+                if action is None:
+                    self.game_active = False
+                    break
                 self.update_vel(action)
                 self.update_state()
                 if not self.visualization_active:

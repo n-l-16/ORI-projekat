@@ -1,12 +1,11 @@
 import inspect
 import sys
-import heapq, random
 
 from numpy import sign
 
 
 class FeatureExtractor:
-    def getFeatures(self, state, action, food, width, height):
+    def getFeatures(self, state, action):
         """
           Returns a dict from features to counts
           Usually, the count will just be 1.0 for
@@ -25,51 +24,30 @@ class SimpleExtractor(FeatureExtractor):
 
     def getFeatures(self, state, action):
 
-        # features["bias"] = 1.0
-        #
-        # # compute the location of pacman after he takes the action
-        # x, y = state.getPacmanPosition()
-        # dx, dy = Actions.directionToVector(action)
-        # next_x, next_y = int(x + dx), int(y + dy)
-        #
-        # # count the number of ghosts 1-step away
-        # features["#-of-ghosts-1-step-away"] = sum((next_x, next_y) in Actions.getLegalNeighbors(g, walls) for g in ghosts)
-        #
-        # # if there is no danger of ghosts then add the food feature
-        # if not features["#-of-ghosts-1-step-away"] and food[next_x][next_y]:
-        #     features["eats-food"] = 1.0
-        #
-        # #dist = closestFood((next_x, next_y), food, walls) #gde nam se nalazi hrana
-        # # if dist is not None:
-        # #     # make the distance a number less than one otherwise the update
-        # #     # will diverge wildly
-        # #     features["closest-food"] = float(dist) / (walls.width * walls.height)
-        # features.divideAll(10.0)
-
         food = state[4]
         height = state[5]
         width = state[6]
         features = {"food": 0, "snake-size": 0, "walls": 0, "in-walls": 0, "in-tail": 0, "distance-food": 0}
         if state[0][0] < 0 or state[0][0] >= height:
-            features["in-walls"] = -1
+            features["in-walls"] = -1000/10
         elif state[0][1] < 0 or state[0][1] >= width:
-            features["in-walls"] = -1
+            features["in-walls"] = -1000/10
         elif state[0][1] in state[1][1:]:
-            features["in-tail"] = -1
+            features["in-tail"] = -1000/10
 
         x = food[0] - state[0][0]
         y = food[1] - state[0][1]
         if abs(x) + abs(y) != 0:
-            features["distance-food"] = (1/(abs(x) + abs(y))) #verovatno da ali proveri
+            features["distance-food"] = (1/(abs(x) + abs(y)))*20/10 #verovatno da ali proveri
 
-        features["snake-size"] = len(state[1])
+        features["snake-size"] = len(state[1])*50/10
         if x == 0 and y == 0:
-            features["food"] = 1
+            features["food"] = 5/10
 
         if state[0][0] < 1 or state[0][0] >= height-1:
-            features["walls"] += -1
+            features["walls"] += -10/10
         elif state[0][1] < 1 or state[0][1] >= width-1:
-            features["walls"] += -1
+            features["walls"] += -10/10
 
         return features
 

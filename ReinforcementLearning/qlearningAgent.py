@@ -1,6 +1,6 @@
 from ReinforcementLearning.Agent import ReinforcementAgent
 import random
-from ReinforcementLearning.Features import Counter, SimpleExtractor
+from ReinforcementLearning.Features import  SimpleExtractor
 
 
 class QLearningAgent(ReinforcementAgent):
@@ -23,7 +23,7 @@ class QLearningAgent(ReinforcementAgent):
         - self.getLegalActions(state)
           which returns legal actions for a state
     """
-    def __init__(self, epsilon=0.05, gamma=0.8, alpha=0.2, numTraining=0):
+    def __init__(self, epsilon=0.01, gamma=0.8, alpha=0.8, numTraining=0):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self)
         self.q_value = {}
@@ -142,7 +142,7 @@ def flip_coin(p):
 class PacmanQAgent(QLearningAgent):
     "Exactly the same as QLearningAgent, but with different default parameters"
 
-    def __init__(self, epsilon=0.05, gamma=0.8, alpha=0.2, numTraining=0):
+    def __init__(self, epsilon=0.01, gamma=0.8, alpha=0.8, numTraining=0):
         """
         These default parameters can be changed from the pacman.py command line.
         For example, to change the exploration rate, try:
@@ -179,11 +179,13 @@ class ApproximateQAgent(PacmanQAgent):
        and update.  All other QLearningAgent functions
        should work as is.
     """
-    def __init__(self, epsilon=0.05, gamma=0.8, alpha=0.2, numTraining=0):
+    def __init__(self, epsilon=0.01, gamma=0.8, alpha=0.8, numTraining=0):
         self.featExtractor = SimpleExtractor()
 
         PacmanQAgent.__init__(self, 0.05, 0.8, 0.2, numTraining)
-        self.weights = {"food": 100, "snake-size": 50, "walls": 200, "in-walls": 450, "in-tail": 300, "distance-food": 100}
+        # self.weights = {"food": 100, "snake-size": 100, "walls": 250, "in-walls": 500, "in-tail": 300, "distance-food": 100}
+        self.weights = {"food": 10, "snake-size": 5, "walls": -1, "in-walls": -100, "in-tail": -100,
+                        "distance-food": 2}
 
     def getWeights(self):
         return self.weights
@@ -205,17 +207,8 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         features = self.featExtractor.getFeatures(state, action)
+        # print(reward)
         diff = self.alpha * ((reward + self.discount * self.getValue(nextState)) - self.getQValue(state, action))
+        # print(diff)
         for feature in features.keys():
             self.weights[feature] = self.weights[feature] + diff * features[feature]
-
-    def final(self, state):
-        "Called at the end of each game."
-        # call the super-class final method
-        PacmanQAgent.final(self, state)
-
-        # did we finish training?
-        if self.episodesSoFar == self.numTraining:
-            # you might want to print your weights here for debugging
-            "*** YOUR CODE HERE ***"
-            pass
