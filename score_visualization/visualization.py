@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
 import csv
 
+ColorLine ={
+    "GREEN": '#26734d'
+}
+
 
 def plot_a_star_score(file_name):
     x = []
@@ -13,7 +17,7 @@ def plot_a_star_score(file_name):
                 x.append(int(row[0]))
                 y.append(int(row[1]))
 
-    plt.plot(x, y, color = 'b',
+    plt.plot(x, y, color = ColorLine["GREEN"],
              marker = 'o',label = "Score")
 
     plt.xticks(rotation = 25)
@@ -25,4 +29,4 @@ def plot_a_star_score(file_name):
     plt.show()
     print(max(y))
     print(sum(y) / len(y))
-    print(len([i for i in y if i > 5])/len(y))
+    print(len([i for i in y if i > 45])/len(y))

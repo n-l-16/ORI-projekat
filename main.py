@@ -11,7 +11,7 @@ class Color:
 def run_a_star_algorithm(iteration=None):
     snake_game = SnakeGameAStar()
     snake_game.run_with_write(iteration) #ako hocemo upisivanje u fajl
-    #snake_game.run_game(snake_game.a_star_search)
+    #snake_game.run_game(snake_game.aStarSearch)
 
 
 def run_with_writing():
@@ -32,7 +32,7 @@ def choose_algorithm():
     while choice not in ["1", "2"]:
         choice = input(">>> ")
         if choice == "1":
-            #plot_a_star_score('a_star_scores_h2.csv')
+            #plot_a_star_score('a_star_scores_h4.csv')
             run_with_writing()
         elif choice == "2":
             run_reinforcement_learning()
