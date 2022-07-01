@@ -1,3 +1,4 @@
+from ReinforcementLearning.start import run_agent
 from snake_game_A_star import SnakeGameAStar
 from score_visualization.visualization import  *
 
@@ -21,7 +22,9 @@ def run_with_writing():
 
 
 def run_reinforcement_learning():
-    pass
+    number_of_game = 10000
+    number_of_training = 9990
+    run_agent(number_of_game, number_of_training)
 
 
 def choose_algorithm():

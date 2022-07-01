@@ -69,6 +69,9 @@ class SnakeGame:
     def get_start_state(self):
         return (self.head, self.snake, [0,0])
 
+    def get_state(self):
+        return (self.head, self.snake, [0, 0], self.score, self.food, self.height, self.width)
+
     def is_goal_state(self, state):
         head = state[0]
         return head[0] == self.food[0] and head[1] == self.food[1]

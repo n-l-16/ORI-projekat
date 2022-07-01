@@ -3,6 +3,11 @@ import pygame
 import random
 
 rand = random.Random()
+class Color:
+    GREEN_BODY = (113, 207, 90)
+    GREEN_HEAD = (0, 255, 0)
+    WHITE = (255, 255, 255)
+    RED = (255, 0, 0)
 
 
 class Color:
@@ -16,6 +21,8 @@ class SnakeGameGUI(SnakeGame):
     
     def __init__(self):
         super().__init__()
+        self.visualization_active = True
+
         self.BODY_ELEM_SIZE = 25
         self.WIDTH = self.BODY_ELEM_SIZE * self.width
         self.HEIGHT = self.BODY_ELEM_SIZE * self.height
