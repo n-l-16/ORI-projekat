@@ -7,8 +7,8 @@ class SnakeGame():
     
     def __init__(self):
         self.game_state = True # False when Game Over
-        self.height = 15
-        self.width = 15
+        self.height = 10
+        self.width = 10
         self.size = [self.height, self.width]
         self.board = np.zeros(self.size)
         self.score = 0
@@ -47,42 +47,75 @@ class SnakeGame():
         return rand.choices(empty_spaces)[0]
     
     def update_vel(self, vel):
-        temp_head = [self.head[0] + vel[0], self.head[1] + vel[1]]
-        if temp_head != self.snake[1]: # make sure it's not previous body part
-            self.vel = vel
+        self.dir = vel
+
 
     def update_state(self):
-        self.head[0] += self.vel[0]
-        self.head[1] += self.vel[1]
+        self.head[0] += self.dir[0]
+        self.head[1] += self.dir[1]
 
-        if self.head[0] < 0 or self.head[0] >= self.height:
-            self.head = self.snake[0].copy() # did not enter valid move
-            self.game_state = False
-        elif self.head[1] < 0 or self.head[1] >= self.width:
-            self.head = self.snake[0].copy() # did not enter valid move
-            self.game_state = False
-        elif self.head in self.snake[2::]: # snake in body and no u-turn
-            self.head = self.snake[0].copy() # did not enter valid move
-            self.game_state = False 
-        elif self.head not in self.snake: # snake moved
-            if self.head == self.food: # ate food, grow snake, gen food
-                self.score += 1
-                self.snake.insert(0, self.head.copy())
-                self.board[self.snake[1][0], self.snake[1][1]] = 1
-                self.board[self.head[0], self.head[1]] = 2
-                self.food = self.rand_food()
-                self.board[self.food[0], self.food[1]] = -1
-            else: # move snake
-                self.snake.insert(0, self.head.copy())
-                self.board[self.snake[1][0], self.snake[1][1]] = 1
-                self.board[self.head[0], self.head[1]] = 2
-                rem = self.snake.pop()
-                self.board[rem[0], rem[1]] = 0
-        else:
-            self.head = self.snake[0].copy() # did not enter valid move
+        if self.head == self.food:  # jede hranu
+            self.score += 1
+            self.move_head()
+            self.food = self.rand_food()
+            self.board[self.food[0], self.food[1]] = -1
+        else:  # obicno pomeranje
+            self.move_head()
+            rem = self.snake[-1]
+            self.snake = self.snake[:-1]
+            self.board[rem[0], rem[1]] = 0
+        if self.is_end_game():
+            self.game_active = False
+
+    def is_end_game(self):
+        if self.head[0] < 0 or self.head[0] >= self.height:  # udarac u zid
+            return True
+        elif self.head[1] < 0 or self.head[1] >= self.width:  # udarac u zid
+            return True
+        elif self.head in self.snake[2::]:  # udarac u svoje teleo
+            return True
+        return False
+
+    def move_head(self):
+        self.snake.insert(0, self.head.copy())
+        self.board[self.snake[1][0], self.snake[1][1]] = 1
+        self.board[self.head[0], self.head[1]] = 2
+
+    # def update_state(self):
+    #     self.head[0] += self.vel[0]
+    #     self.head[1] += self.vel[1]
+    #
+    #     if self.head[0] < 0 or self.head[0] >= self.height:
+    #         self.head = self.snake[0].copy() # did not enter valid move
+    #         self.game_state = False
+    #     elif self.head[1] < 0 or self.head[1] >= self.width:
+    #         self.head = self.snake[0].copy() # did not enter valid move
+    #         self.game_state = False
+    #     elif self.head in self.snake[2::]: # snake in body and no u-turn
+    #         self.head = self.snake[0].copy() # did not enter valid move
+    #         self.game_state = False
+    #     elif self.head not in self.snake: # snake moved
+    #         if self.head == self.food: # ate food, grow snake, gen food
+    #             self.score += 1
+    #             self.snake.insert(0, self.head.copy())
+    #             self.board[self.snake[1][0], self.snake[1][1]] = 1
+    #             self.board[self.head[0], self.head[1]] = 2
+    #             self.food = self.rand_food()
+    #             self.board[self.food[0], self.food[1]] = -1
+    #         else: # move snake
+    #             self.snake.insert(0, self.head.copy())
+    #             self.board[self.snake[1][0], self.snake[1][1]] = 1
+    #             self.board[self.head[0], self.head[1]] = 2
+    #             rem = self.snake.pop()
+    #             self.board[rem[0], rem[1]] = 0
+    #     else:
+    #         self.head = self.snake[0].copy() # did not enter valid move
 
     def get_start_state(self):
-        return self.head
+        return (self.head, self.snake, [0,0])
+
+    def get_state(self):
+        return (self.head, self.snake, [0, 0], self.score, self.food, self.height, self.width)
 
     def is_goal_state(self):
         return self.head[0] == self.food[0] and self.head[1] == self.food[1]
@@ -105,9 +138,9 @@ class SnakeGame():
             return True
         return False
 
-    def get_next_position(self, direction):
-        new_head_x = self.head[0] + direction[0]
-        new_head_y = self.head[1] + direction[1]
+    def get_next_position(self, direction, head):
+        new_head_x = head[0] + direction[0]
+        new_head_y = head[1] + direction[1]
         new_head = [new_head_x, new_head_y]
         return new_head
 

@@ -4,11 +4,17 @@ import time
 import random
 
 rand = random.Random()
+class Color:
+    GREEN_BODY = (113, 207, 90)
+    GREEN_HEAD = (0, 255, 0)
+    WHITE = (255, 255, 255)
+    RED = (255, 0, 0)
 
 class SnakeGameGUI(SnakeGame):
     
     def __init__(self, headless_mode = False):
         super().__init__()
+        self.visualization_active = True
         self.GREEN_BODY = (113, 207, 90)
         self.GREEN_HEAD = (0, 255, 0)
         self.WHITE = (255, 255, 255)
