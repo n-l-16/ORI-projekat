@@ -1,6 +1,6 @@
 from ReinforcementLearning.start import run_agent
 from snake_game_A_star import SnakeGameAStar
-
+from score_visualization.visualization import  *
 
 class Color:
     GREEN = '\033[92m'
@@ -9,10 +9,16 @@ class Color:
     BOLD_END = '\033[0m'
 
 
-
-def run_a_star_algorithm():
+def run_a_star_algorithm(iteration=None):
     snake_game = SnakeGameAStar()
-    snake_game.run_game(snake_game.a_star_search)
+    snake_game.run_with_write(iteration) #ako hocemo upisivanje u fajl
+    #snake_game.run_game(snake_game.aStarSearch)
+
+
+def run_with_writing():
+    for i in range(100):
+        run_a_star_algorithm(i)
+    plot_a_star_score('./statistic/a_star_scores_h3.csv')
 
 
 def run_reinforcement_learning():
@@ -22,14 +28,15 @@ def run_reinforcement_learning():
 
 
 def choose_algorithm():
-    print("\n" + Color.GREEN + Color.BOLD +  "Choose the algorithm for snake game" + Color.BOLD_END + Color.END_GREEN)
+    print("\n" + Color.GREEN + Color.BOLD + "Choose the algorithm for snake game" + Color.BOLD_END + Color.END_GREEN)
     print("1. --> A*  algorithm")
     print("2. --> Reinforcement learning")
     choice = ""
     while choice not in ["1", "2"]:
         choice = input(">>> ")
         if choice == "1":
-            run_a_star_algorithm()
+            #plot_a_star_score('a_star_scores_h4.csv')
+            run_with_writing()
         elif choice == "2":
             run_reinforcement_learning()
         else:
