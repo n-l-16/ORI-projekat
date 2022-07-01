@@ -20,7 +20,7 @@ class SnakeGameGUI(SnakeGame):
         self.WIDTH = self.BODY_ELEM_SIZE * self.width
         self.HEIGHT = self.BODY_ELEM_SIZE * self.height
         self.TABLE_SIZE = (self.WIDTH + 400, self.HEIGHT)
-        self.SCREEN = pygame.display.set_mode(self.TABLE_SIZE)
+        self.SCREEN = pygame.display.set_mode(self.TABLE_SIZE, )
         pygame.init()
 
     def draw_board(self):
