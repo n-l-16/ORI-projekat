@@ -5,54 +5,51 @@ from numpy import sign
 
 
 class FeatureExtractor:
-    def getFeatures(self, state, action):
-        """
-          Returns a dict from features to counts
-          Usually, the count will just be 1.0 for
-          indicator functions.
-        """
-        raiseNotDefined()
+    def get_features(self, state, action):
+        raise_not_defined()
 
 class SimpleExtractor(FeatureExtractor):
     """
-    Returns simple features for a basic reflex Pacman:
-    - whether food will be eaten
-    - how far away the next food is
-    - whether a ghost collision is imminent
-    - whether a ghost is one step away
+    Features za zmijicu:
+    koliko je hrane pojela
+    kolika je duzina zmije
+    da li je u blizini zidova
+    da li je udarila u zid
+    da li je udarila u svoje telo
+    razdaljina do hrane
     """
 
-    def getFeatures(self, state, action):
+    def get_features(self, state, action):
 
         food = state[4]
         height = state[5]
         width = state[6]
         features = {"food": 0, "snake-size": 0, "walls": 0, "in-walls": 0, "in-tail": 0, "distance-food": 0}
         if state[0][0] < 0 or state[0][0] >= height:
-            features["in-walls"] = -1000/10
+            features["in-walls"] = 0.1
         elif state[0][1] < 0 or state[0][1] >= width:
-            features["in-walls"] = -1000/10
+            features["in-walls"] = 0.1
         elif state[0][1] in state[1][1:]:
-            features["in-tail"] = -1000/10
+            features["in-tail"] = 0.1
 
         x = food[0] - state[0][0]
         y = food[1] - state[0][1]
         if abs(x) + abs(y) != 0:
-            features["distance-food"] = (1/(abs(x) + abs(y)))*20/10 #verovatno da ali proveri
+            features["distance-food"] = (1/(abs(x) + abs(y)))
 
-        features["snake-size"] = len(state[1])*50/10
+        features["snake-size"] = len(state[1])/100*12
         if x == 0 and y == 0:
-            features["food"] = 5/10
+            features["food"] = 0.8
 
         if state[0][0] < 1 or state[0][0] >= height-1:
-            features["walls"] += -10/10
+            features["walls"] += 0.2
         elif state[0][1] < 1 or state[0][1] >= width-1:
-            features["walls"] += -10/10
+            features["walls"] += 0.2
 
         return features
 
 
-def raiseNotDefined():
+def raise_not_defined():
     fileName = inspect.stack()[1][1]
     line = inspect.stack()[1][2]
     method = inspect.stack()[1][3]
@@ -283,9 +280,8 @@ class Directions:
     REVERSE = {LEFT: RIGHT, UP: BOTTOM, STOP: STOP}
 class Actions:
     """
-    A collection of static methods for manipulating move actions.
+    Akcije koje moze zmija da izvrsava
     """
-    # Directions
     _directions = {Directions.LEFT: (-1, 0),
                    Directions.RIGHT: (1, 0),
                    Directions.UP:  (0, -1),
@@ -344,7 +340,7 @@ class Actions:
 
     getPossibleActions = staticmethod(getPossibleActions)
 
-    def getLegalNeighbors(position, walls): #provera da nije u svom telu
+    def get_legal_neighbors(position, walls): #provera da nije u svom telu
         x,y = position
         x_int, y_int = int(x + 0.5), int(y + 0.5)
         neighbors = []
@@ -356,10 +352,10 @@ class Actions:
             if next_y < 0 or next_y == walls.height: continue
             if not walls[next_x][next_y]: neighbors.append((next_x, next_y))
         return neighbors
-    getLegalNeighbors = staticmethod(getLegalNeighbors)
+    get_legal_neighbors = staticmethod(get_legal_neighbors)
 
-    def getSuccessor(position, action):
+    def get_successor(position, action):
         dx, dy = Actions.directionToVector(action)
         x, y = position
         return (x + dx, y + dy)
-    getSuccessor = staticmethod(getSuccessor)
+    get_successor = staticmethod(get_successor)
