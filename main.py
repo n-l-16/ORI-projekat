@@ -1,4 +1,4 @@
-from ReinforcementLearning.start import run_agent
+from ReinforcementLearning.start_agent import run_agent
 from snake_game_A_star import SnakeGameAStar
 from score_visualization.visualization import  *
 
