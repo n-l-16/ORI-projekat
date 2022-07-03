@@ -1,4 +1,4 @@
-from ReinforcementLearning.start import run_agent
+from ReinforcementLearning.start_agent import run_agent
 from snake_game_A_star import SnakeGameAStar
 from score_visualization.visualization import  *
 
@@ -18,7 +18,7 @@ def run_a_star_algorithm(iteration=None):
 def run_with_writing():
     for i in range(100):
         run_a_star_algorithm(i)
-    plot_a_star_score('./statistic/a_star_scores_h3.csv')
+    plot_a_star_score('./statistic/a_star_scores_5_5.csv')
 
 
 def run_reinforcement_learning():
@@ -35,8 +35,8 @@ def choose_algorithm():
     while choice not in ["1", "2"]:
         choice = input(">>> ")
         if choice == "1":
-            #plot_a_star_score('a_star_scores_h4.csv')
-            run_with_writing()
+            #plot_a_star_score('./statistic/a_star_scores_5_5.csv')
+            run_a_star_algorithm()
         elif choice == "2":
             run_reinforcement_learning()
         else:

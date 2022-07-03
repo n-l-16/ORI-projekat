@@ -13,27 +13,31 @@ class SnakeGame:
         self.size = [self.height, self.width]
         self.board = np.zeros(self.size)
         self.score = 0
+        self.win = False
         self.head = [self.height//2, self.width//2]
         self.directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]
         self.dir = rand.choice(self.directions)
         self.snake = [[self.head[0] - i * self.dir[0], self.head[1] - i * self.dir[1]] for i in range(3)]
-        self.food = self.rand_food()
+        self.food = None
         self.draw_initial_board()
+        self.food = self.rand_food()
+        self.board[self.food[0], self.food[1]] = -1
 
     def draw_initial_board(self):
         for body_elem in self.snake:
             self.board[body_elem[0], body_elem[1]] = 1
         self.board[self.head[0], self.head[1]] = 2
 
-        self.board[self.food[0], self.food[1]] = -1
-
     def rand_food(self):
         empty_spaces = [[i, j] for i in range(self.height) for j in range(self.width) if self.board[i, j] == 0]
+        if len(empty_spaces) == 0:
+            self.win = True
+            self.game_active = False
+            return self.head
         return rand.choices(empty_spaces)[0]
     
     def update_vel(self, vel):
         self.dir = vel
-
 
     def update_state(self):
         self.head[0] += self.dir[0]
@@ -53,6 +57,8 @@ class SnakeGame:
             self.game_active = False
 
     def move_head(self):
+        if self.head[0] >= self.height or self.head[1] >= self.width or self.head[0] < 0 or self.head[1] < 0:
+            return
         self.snake.insert(0, self.head.copy())
         self.board[self.snake[1][0], self.snake[1][1]] = 1
         self.board[self.head[0], self.head[1]] = 2

@@ -16,7 +16,6 @@ class SnakeGameReinforcement(SnakeGameGUI):
         self.move_history = []
 
     def run_game(self, agent):
-        # self.food = self.rand_food()
         if not self.visualization_active:
             pygame.init()
             font = pygame.font.SysFont("monospace", 40)
@@ -26,10 +25,13 @@ class SnakeGameReinforcement(SnakeGameGUI):
         if not agent:
             pass
         else:
-            agent.registerInitialState(self.state)
-            while self.game_state:
-                obs = agent.observationFunction(self.state, self.food, self.height, self.width)#proveri za state
-                action = agent.getAction(obs)
+            agent.register_initial_state(self.state)
+            while self.game_active:
+                obs = agent.observation_function(self.state, self.food, self.height, self.width)
+                action = agent.get_action(obs)
+                if action is None:
+                    self.game_active = False
+                    break
                 self.update_vel(action)
                 self.update_state()
                 if not self.visualization_active:
@@ -50,8 +52,6 @@ class SnakeGameReinforcement(SnakeGameGUI):
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             exit_game_sign = True
-
-                # pygame.quit()
             pygame.quit()
 
     def get_successor(self, action):

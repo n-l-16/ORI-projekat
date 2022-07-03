@@ -6,7 +6,6 @@ def new_game(display, is_training):
     agent = ApproximateQAgent()
     game = SnakeGameReinforcement(is_training)
     game.run_game(agent)
-    #init za game
     return game
 
 def run_agent(number_of_game, number_of_training):
