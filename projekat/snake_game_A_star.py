@@ -9,10 +9,10 @@ rand = random.Random()
 
 statistic_files = {
 
-    "h1_heuristic" : "a_star_scores_h1.csv",
-    "h2_heuristic" : "a_star_scores_h2.csv",
-    "h4_heuristic" : "a_star_scores_h4.csv",
-    "h3_heuristic" : "a_star_scores_h3.csv"
+    "h1_heuristic" : "./statistic/a_star_scores_5_5.csv",
+    "h2_heuristic" : "./statistic/a_star_scores_10_10.csv",
+    "h4_heuristic" : "./statistic/a_star_scores_h4.csv",
+    "h3_heuristic" : "./statistic/a_star_scores_15_15.csv"
 
 }
 
@@ -22,16 +22,11 @@ class SnakeGameAStar(SnakeGameGUI):
     def __init__(self):
         super().__init__()
 
-
     def heuristic(self, head):
         x = self.food[0] - head[0]
         y = self.food[1] - head[1]
         heuristic = abs(x) + abs(y)
-        # if self.is_blind_row(head):
-        #     heuristic += 100
-        # return np.sqrt(x ** 2 + y ** 2)  # heuristika h1
         return heuristic # heuristika h2
-
 
     def get_direction_from_event(self, event):
         direction = self.dir
@@ -47,7 +42,6 @@ class SnakeGameAStar(SnakeGameGUI):
             else:
                 direction = self.dir
         return direction
-
 
     def run_game(self, player_ai=None):
         self.score = 0
@@ -76,6 +70,9 @@ class SnakeGameAStar(SnakeGameGUI):
                         for dir in directions:
                             self.update_vel(dir)
                             self.update_state()
+                            if self.win:
+                                print("WIN")
+                                break
                             if not self.game_active:
                                 break
                             self.draw_board()
@@ -84,10 +81,14 @@ class SnakeGameAStar(SnakeGameGUI):
                     else:
                         self.game_active = False
 
-
-        label = font.render("Game Over!", True, Color.RED)
-        self.SCREEN.blit(label, (self.WIDTH + 10, 50))
-        pygame.display.update()
+        if not self.win:
+            label = font.render("Game Over!", True, Color.RED)
+            self.SCREEN.blit(label, (self.WIDTH + 10, 50))
+            pygame.display.update()
+        else:
+            label = font.render("WIN!", True, Color.GREEN_HEAD)
+            self.SCREEN.blit(label, (self.WIDTH + 10, 50))
+            pygame.display.update()
 
         #da prozor ostane upaljen i kad se igra zavrsi
         while not exit_game_sign:
@@ -108,7 +109,6 @@ class SnakeGameAStar(SnakeGameGUI):
         cost = lambda path: self.getCostOfActions() + self.heuristic(path[-1][0])
         priorityQueue = PriorityQueueWithFunction(cost)
         return self.generalSearch( priorityQueue)
-
 
     def generalSearch(self, data_structure):
         visited = []

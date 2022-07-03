@@ -71,9 +71,9 @@ class ReinforcementAgent(ValueEstimationAgent):
         return new_head
 
     def is_collision(self, next_position, snake):
-        if next_position[0] < 0 or next_position[0] >= 5:
+        if next_position[0] < 0 or next_position[0] >= 10:
             return True
-        elif next_position[1] < 0 or next_position[1] >= 5:
+        elif next_position[1] < 0 or next_position[1] >= 10:
             return True
         elif next_position in snake[1:]:
             return True
